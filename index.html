@@ -1,0 +1,135 @@
+<html>
+    <head>
+        <style>
+            h1 {
+                color: white;
+                /* margin: auto; */
+                border-bottom: 5px outset red;
+                border-right: 4px outset red;
+                text-shadow: rgb(255, 0, 0) 1px 0 2px;
+                text-align:center;
+            }
+            p,
+            label {
+                color: white;
+            }
+            .header {
+                background-color:darkslategrey
+            }
+            body { background-color: black;}
+            .options {
+                width: 100%;
+                display: flex;
+                /* justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                gap: 10px;
+                border: 1px solid black; */
+            }
+            .palette_selection {
+                width: 200px;
+                display: flex;
+                flex-direction: column;
+                width: 25%;
+            }
+            .board_settings {
+                width: 200px;
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+            }
+
+            #display_image {
+                width: 300px;
+                height: 169px;
+                border: 1px solid black;
+                background-position: center;
+                background-size: cover;
+            }
+            </style>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="deltaE.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="source.js"></script>
+        <title>Wooden Image Designer</title>
+    </head>
+    <body onload="OnLoad()">
+        <div class="header">
+            <h1>Wood Image Designer</h1>
+        </div>
+        <div class="input">
+            <p>Select Image: </p>
+            <input type="file" id="image_input" accept="image/*">
+            <div id="display_image"></div>
+        </div>
+        <div class="options">
+            <div class="palette_selection" style="background-color:grey">
+                <p>Select your Color Palette:</p>
+                <div>
+                    <input type="checkbox" id="maple" name="maple" 
+                        checked>
+                    <label for="maple" style="background-color:rgb(202, 183, 162)">Maple</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="birch" name="birch">
+                    <label for="birch" style="background-color:rgb(169, 108, 53)">Birch</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="cherry" name="cherry">
+                    <label for="cherry" style="background-color:rgb(177, 130, 99)">Cherry</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="walnut" name="walnut">
+                    <label for="walnut" style="background-color:rgb(76, 45, 36)">Walnut</label>
+                </div>
+                <p>Exotics:</p>
+                <div>
+                    <input type="checkbox" id="padauk" name="padauk" onclick="">
+                    <label for="padauk" style="background-color:rgb(89, 16, 0)">Padauk</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="wenge" name="wenge">
+                    <label for="wenge" style="background-color:rgb(46, 22, 11)">Wenge</label>
+                </div>
+            </div>
+        </div>
+        <div>
+            <p>Blur</p> <input id="blur" type="range" max="10" min="0" value="0" onchange="loadFilters()">
+            <p>Brightness</p> <input id="brightness" type="range" max="300" min="0" value="100" onchange="loadFilters()">
+            <p>Contrast</p> <input id="contrast" type="range" max="300" min="0" value="100" onchange="loadFilters()">
+        </div>
+        <div class="UI">
+            <button type="button" id="calculate_button" onclick="CalculateResult()">Calculate</button>
+            <button type="button" id="btn-download" onclick="DownloadImage()">Download</button>
+        </div>
+        <div class="input_display"><canvas id="display_input"></canvas></div>
+        <div class="board_settings">
+            <p>Build your Board:</p>
+            <div class="board_color">
+                <label for="board_color">Base Color:</label>
+                <select name="board_color" id="board_color">
+                <option value="maple">Maple</option>
+                <option value="walnut">walnut</option>
+                </select>
+
+                <label for="board_size">Dimensions:</label>
+                <select name="board_size" id="board_size">
+                <option value="12x14">12" x 14"</option>
+                <option value="12x16">12" x 16"</option>
+                <option value="12x18">12" x 18"</option>
+                </select>
+
+                <label for="board_thickness">Thickness:</label>
+                <select name="board_thickness" id="board_thickness">
+                <option value="1">1 inch</option>
+                <option value="1.25">1.25 inch</option>
+                <option value="1.5">1.5 inch</option>
+                <option value="1.75">1.75 inch</option>
+                <option value="2">2 inch</option>
+                
+                </select>
+            </div>
+        </div>
+        <div class="board_display"><canvas id="board_canvas"></canvas></div>
+    </body>
+</html>
