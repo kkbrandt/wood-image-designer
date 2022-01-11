@@ -1,52 +1,6 @@
 <html>
     <head>
-        <style>
-            h1 {
-                color: white;
-                /* margin: auto; */
-                border-bottom: 5px outset red;
-                border-right: 4px outset red;
-                text-shadow: rgb(255, 0, 0) 1px 0 2px;
-                text-align:center;
-            }
-            p,
-            label {
-                color: white;
-            }
-            .header {
-                background-color:darkslategrey
-            }
-            body { background-color: black;}
-            .options {
-                width: 100%;
-                display: flex;
-                /* justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                gap: 10px;
-                border: 1px solid black; */
-            }
-            .palette_selection {
-                width: 200px;
-                display: flex;
-                flex-direction: column;
-                width: 25%;
-            }
-            .board_settings {
-                width: 200px;
-                display: flex;
-                flex-direction: column;
-                width: 50%;
-            }
-
-            #display_image {
-                width: 300px;
-                height: 169px;
-                border: 1px solid black;
-                background-position: center;
-                background-size: cover;
-            }
-            </style>
+        <link rel="stylesheet" href="style.css">
         <script src="https://d3js.org/d3.v7.min.js"></script>
         <script src="deltaE.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -57,14 +11,14 @@
         <div class="header">
             <h1>Wood Image Designer</h1>
         </div>
-        <div class="input">
-            <p>Select Image: </p>
-            <input type="file" id="image_input" accept="image/*">
-            <div id="display_image"></div>
-        </div>
         <div class="options">
-            <div class="palette_selection" style="background-color:grey">
-                <p>Select your Color Palette:</p>
+            <div class="input">
+                <p>1. Select Image: </p>
+                <input type="file" id="image_input" accept="image/*" onchange="ReadNewInput()">
+                <div id="display_image"></div>
+            </div>
+            <div class="palette_selection">
+                <p>2. Select your Color Palette:</p>
                 <div>
                     <input type="checkbox" id="maple" name="maple" 
                         checked>
@@ -92,14 +46,15 @@
                     <label for="wenge" style="background-color:rgb(46, 22, 11)">Wenge</label>
                 </div>
             </div>
-        </div>
-        <div>
-            <p>Blur</p> <input id="blur" type="range" max="10" min="0" value="0" onchange="loadFilters()">
-            <p>Brightness</p> <input id="brightness" type="range" max="300" min="0" value="100" onchange="loadFilters()">
-            <p>Contrast</p> <input id="contrast" type="range" max="300" min="0" value="100" onchange="loadFilters()">
+            <div class="pre-processing">
+                <p>3. Pre-process your Image:</p>
+                <p>Blur</p> <input id="blur" type="range" max="10" min="0" value="0" onchange="loadFilters()">
+                <p>Brightness</p> <input id="brightness" type="range" max="300" min="0" value="100" onchange="loadFilters()">
+                <p>Contrast</p> <input id="contrast" type="range" max="300" min="0" value="100" onchange="loadFilters()">
+            </div>
         </div>
         <div class="UI">
-            <button type="button" id="calculate_button" onclick="CalculateResult()">Calculate</button>
+            <button type="button" id="calculate_button" onclick="CalculateResult()">Calculate!</button>
             <button type="button" id="btn-download" onclick="DownloadImage()">Download</button>
         </div>
         <div class="input_display"><canvas id="display_input"></canvas></div>
@@ -107,13 +62,13 @@
             <p>Build your Board:</p>
             <div class="board_color">
                 <label for="board_color">Base Color:</label>
-                <select name="board_color" id="board_color">
+                <select name="board_color" id="board_color" onchange="UpdateBoard()">
                 <option value="maple">Maple</option>
                 <option value="walnut">walnut</option>
                 </select>
 
                 <label for="board_size">Dimensions:</label>
-                <select name="board_size" id="board_size">
+                <select name="board_size" id="board_size" onchange="UpdateBoard()">
                 <option value="12x14">12" x 14"</option>
                 <option value="12x16">12" x 16"</option>
                 <option value="12x18">12" x 18"</option>

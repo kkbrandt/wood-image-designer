@@ -1,0 +1,59 @@
+h1 {
+    color: white;
+    /* margin: auto; */
+    border-bottom: 5px outset red;
+    border-right: 4px outset red;
+    text-shadow: rgb(255, 0, 0) 1px 0 2px;
+    text-align:center;
+}
+p,
+label {
+    color: white;
+}
+.header {
+    background-color:black;
+}
+body { background-color: rgb(31, 31, 31);}
+.options {
+    /* width: 100%; */
+    display: flex;
+    border-bottom:3px outset red;
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
+    /* flex-direction: column; */
+    /* gap: 10px; */
+    /* border: 1px solid black; */
+}
+.input {
+    background-color:black;
+    text-align:center;
+}
+.palette_selection {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    padding: 5px;
+    text-align:center;
+    background-color:black;
+}
+.pre-processing {
+    margin: 5px;
+    padding: 5px;
+    background-color:black;
+}
+.board_settings {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+#display_image {
+    width: 300px;
+    height: 169px;
+    border: 1px solid black;
+    background-position: center;
+    background-size: cover;
+}

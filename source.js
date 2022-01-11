@@ -1,77 +1,66 @@
- ///////////////////////// CONSTANTS /////////////////////////////////
- var BirchColor = [169, 108, 53];
- var CherryColor = [177, 130, 99];
- var MapleColor = [202, 183, 162];
- var WalnutColor = [76, 45, 36];
- var PadaukColor = [89, 16, 0];
- var WengeColor = [46, 22, 11];
- var ColorPalette = [MapleColor];
+///////////////////////// CONSTANTS ///////////////////////////////
+const BirchColor = [169, 108, 53];
+const CherryColor = [177, 130, 99];
+const MapleColor = [202, 183, 162];
+const WalnutColor = [76, 45, 36];
+const PadaukColor = [89, 16, 0];
+const WengeColor = [46, 22, 11];
+const ColorMap = {'birch': BirchColor, 'cherry': CherryColor, 'maple': MapleColor, 'walnut': WalnutColor, 'padauk': PadaukColor, 'wenge': WengeColor};
 
- var ColorMap = {'birch': BirchColor, 'cherry': CherryColor, 'maple': MapleColor, 'walnut': WalnutColor, 'padauk': PadaukColor, 'wenge': WengeColor};
+const reader = new FileReader();
 
- console.log('wtf');
- var inputImage = new Image();
- function OnLoad() {
-    // Image Selection: Result is stored in variable "rgbArray".
-    const image_input = document.getElementById("image_input");
-    image_input.addEventListener("change", function () {
-    const reader = new FileReader();
+////////////////////////// GLOBALS ////////////////////////////////
+var ColorPalette = [MapleColor];
+var inputImage = new Image();
+var result = [];
+
+////////////////////////// FUNCTIONS //////////////////////////////
+function OnLoad() {
+    // Register extra event handlers here
+}
+
+function GetContext() {
+    return document.getElementById('display_input').getContext('2d');
+}
+
+function ReadNewInput() {
     reader.addEventListener("load", () => {
         let result = reader.result;
         inputImage.src = result;
         document.querySelector("#display_image").style.backgroundImage = `url(${reader.result})`;
         inputImage.onload = LoadNewInput;
     });
-    reader.readAsDataURL(this.files[0]);
-    });
-    console.log('wtf2');
-    $('#board_color').change(updateBoard);
-    $('#board_size').change(updateBoard);
-    console.log('wtf3');
+    reader.readAsDataURL(document.getElementById("image_input").files[0]);
 }
 
- function loadFilters() {
-     console.log('loadFilters');
-     let blur = document.getElementById('blur'),
-         brightness = document.getElementById('brightness'),
-         contrast = document.getElementById('contrast');
+function LoadNewInput() {
+    let canvas = document.getElementById('display_input');
+    canvas.width = inputImage.width;
+    canvas.height = inputImage.height;
+    var context = canvas.getContext('2d')
+    context.drawImage(inputImage, 0, 0, inputImage.width, inputImage.height);
+    ReloadRGBArray();
+}
 
-     let canvas = document.getElementById('display_input');
-     let context = canvas.getContext('2d');
-     context.filter = `blur(${$('#blur').val()}px) brightness(${brightness.value}%) contrast(${contrast.value}%)`
-     context.drawImage(inputImage, 0, 0, inputImage.width, inputImage.height);
-     ReloadRGBArray();
- }
+function ReloadRGBArray() {
+    var data = GetContext().getImageData(0, 0, inputImage.width, inputImage.height).data;
+    // Convert to rgb values for every pixel
+    rgbArray = []
+    for (var px = 0; px < data.length; px+=4) {
+            rgbArray.push([data[px], data[px+1], data[px+2]-10]);
+    }
+}
 
+function loadFilters() {
+    console.log('loadFilters');
+    let blur = document.getElementById('blur'),
+        brightness = document.getElementById('brightness'),
+        contrast = document.getElementById('contrast');
 
- function LoadNewInput() {
-     let canvas = document.getElementById('display_input');
-     canvas.width = inputImage.width;
-     canvas.height = inputImage.height;
-     var context = canvas.getContext('2d')
-     context.drawImage(inputImage, 0, 0, inputImage.width, inputImage.height);
-     ReloadRGBArray();
- }
-
- function BlurImage(pixels) {
-     let canvas = document.getElementById('display_input');
-     let context = canvas.getContext('2d');
-     context.filter = `blur(${pixels}px)`;
-     context.drawImage(inputImage, 0, 0, inputImage.width, inputImage.height);
-     ReloadRGBArray();
- }
-
- function ReloadRGBArray() {
-     let canvas = document.getElementById('display_input');
-     let context = canvas.getContext('2d')
-     var data = context.getImageData(0, 0, inputImage.width, inputImage.height).data;
-     // Convert to rgb values for every pixel
-     rgbArray = []
-     for (var px = 0; px < data.length; px+=4) {
-             rgbArray.push([data[px], data[px+1], data[px+2]-10]);
-     }
- }
- var result = [];
+    GetContext().filter = `blur(${$('#blur').val()}px) brightness(${brightness.value}%) contrast(${contrast.value}%)`
+    GetContext().drawImage(inputImage, 0, 0, inputImage.width, inputImage.height);
+    ReloadRGBArray();
+}
 
 function findClosestMatch(pixel) { 
     let closestColor = [];
@@ -86,7 +75,7 @@ function findClosestMatch(pixel) {
     return closestColor;
 }
 
-function updateBoard() {
+function UpdateBoard() {
     let size_map = {'12x14': {height: 12, width: 14}, '12x16': {height: 12, width: 16}, '12x18': {height: 12, width: 18}};
     let dimensions = size_map[$('#board_size').val()];
     $('#board_canvas').width(dimensions.width*50).height(dimensions.height*50);
@@ -130,17 +119,14 @@ function DisplayResult() {
     let inlay = new Image();
     inlay.src = document.getElementById('display_input').toDataURL();
     ctx.drawImage(inlay, board_canvas.width*0.125, board_canvas.height*0.125, board_canvas.width*0.75, board_canvas.height*0.75);
-    // ctx.putImageData(new ImageData(arr, canvas.width), board_canvas.width*0.125, board_canvas.height*0.125, 0, 0, board_canvas.width*0.75, board_canvas.height*0.75);
+
 }
 function DownloadImage() {
+    console.log('DownloadImage');
     // Convert canvas to image
-    document.getElementById('btn-download').addEventListener("click", function(e) {
-        var canvas = document.querySelector('#display_input');
-
-        var dataURL = canvas.toDataURL("image/jpeg", 1.0);
-
-        downloadImage(dataURL, 'my-canvas.jpeg');
-    });
+    var canvas = document.querySelector('#display_input');
+    var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+    downloadImage(dataURL, 'my-design.jpeg');
 
     // Save | Download image
     function downloadImage(data, filename = 'untitled.jpeg') {
