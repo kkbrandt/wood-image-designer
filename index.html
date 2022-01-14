@@ -12,16 +12,15 @@
             <h1>Wood Image Designer</h1>
         </div>
         <div class="options">
-            <div class="input">
-                <p>1. Select Image: </p>
+            <div class="input setup-box">
+                <h2>1. Select Image: </h2>
                 <input type="file" id="image_input" accept="image/*" onchange="ReadNewInput()">
                 <div id="display_image"></div>
             </div>
-            <div class="palette_selection">
-                <p>2. Select your Color Palette:</p>
+            <div class="palette_selection setup-box">
+                <h2>2. Select your Color Palette:</h2>
                 <div>
-                    <input type="checkbox" id="maple" name="maple" 
-                        checked>
+                    <input type="checkbox" id="maple" name="maple" checked>
                     <label for="maple" style="background-color:rgb(202, 183, 162)">Maple</label>
                 </div>
                 <div>
@@ -33,7 +32,7 @@
                     <label for="cherry" style="background-color:rgb(177, 130, 99)">Cherry</label>
                 </div>
                 <div>
-                    <input type="checkbox" id="walnut" name="walnut">
+                    <input type="checkbox" id="walnut" name="walnut" checked>
                     <label for="walnut" style="background-color:rgb(76, 45, 36)">Walnut</label>
                 </div>
                 <p>Exotics:</p>
@@ -46,17 +45,22 @@
                     <label for="wenge" style="background-color:rgb(46, 22, 11)">Wenge</label>
                 </div>
             </div>
-            <div class="pre-processing">
-                <p>3. Pre-process your Image:</p>
+            <div class="pre-processing setup-box">
+                <h2>3. Pre-process your Image:</h2>
                 <p>Blur</p> <input id="blur" type="range" max="10" min="0" value="0" onchange="loadFilters()">
                 <p>Brightness</p> <input id="brightness" type="range" max="300" min="0" value="100" onchange="loadFilters()">
                 <p>Contrast</p> <input id="contrast" type="range" max="300" min="0" value="100" onchange="loadFilters()">
             </div>
+            <div class="UI setup-box">
+                <h2>4. Calculate</h2>
+                <button type="button" id="calculate_button" onclick="CalculateResult()">Calculate!</button>
+                <button type="button" id="btn-download" onclick="DownloadImage()">Download</button>
+            </div>
         </div>
-        <div class="UI">
+        <!-- <div class="UI">
             <button type="button" id="calculate_button" onclick="CalculateResult()">Calculate!</button>
             <button type="button" id="btn-download" onclick="DownloadImage()">Download</button>
-        </div>
+        </div> -->
         <div class="input_display"><canvas id="display_input"></canvas></div>
         <div class="board_settings">
             <p>Build your Board:</p>

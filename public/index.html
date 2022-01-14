@@ -1,89 +1,90 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="deltaE.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="source.js"></script>
+        <title>Wooden Image Designer</title>
+    </head>
+    <body onload="OnLoad()">
+        <div class="header">
+            <h1>Wood Image Designer</h1>
+        </div>
+        <div class="options">
+            <div class="input">
+                <p>1. Select Image: </p>
+                <input type="file" id="image_input" accept="image/*" onchange="ReadNewInput()">
+                <div id="display_image"></div>
+            </div>
+            <div class="palette_selection">
+                <p>2. Select your Color Palette:</p>
+                <div>
+                    <input type="checkbox" id="maple" name="maple" 
+                        checked>
+                    <label for="maple" style="background-color:rgb(202, 183, 162)">Maple</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="birch" name="birch">
+                    <label for="birch" style="background-color:rgb(169, 108, 53)">Birch</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="cherry" name="cherry">
+                    <label for="cherry" style="background-color:rgb(177, 130, 99)">Cherry</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="walnut" name="walnut">
+                    <label for="walnut" style="background-color:rgb(76, 45, 36)">Walnut</label>
+                </div>
+                <p>Exotics:</p>
+                <div>
+                    <input type="checkbox" id="padauk" name="padauk" onclick="">
+                    <label for="padauk" style="background-color:rgb(89, 16, 0)">Padauk</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="wenge" name="wenge">
+                    <label for="wenge" style="background-color:rgb(46, 22, 11)">Wenge</label>
+                </div>
+            </div>
+            <div class="pre-processing">
+                <p>3. Pre-process your Image:</p>
+                <p>Blur</p> <input id="blur" type="range" max="10" min="0" value="0" onchange="loadFilters()">
+                <p>Brightness</p> <input id="brightness" type="range" max="300" min="0" value="100" onchange="loadFilters()">
+                <p>Contrast</p> <input id="contrast" type="range" max="300" min="0" value="100" onchange="loadFilters()">
+            </div>
+        </div>
+        <div class="UI">
+            <button type="button" id="calculate_button" onclick="CalculateResult()">Calculate!</button>
+            <button type="button" id="btn-download" onclick="DownloadImage()">Download</button>
+        </div>
+        <div class="input_display"><canvas id="display_input"></canvas></div>
+        <div class="board_settings">
+            <p>Build your Board:</p>
+            <div class="board_color">
+                <label for="board_color">Base Color:</label>
+                <select name="board_color" id="board_color" onchange="UpdateBoard()">
+                <option value="maple">Maple</option>
+                <option value="walnut">walnut</option>
+                </select>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/9.6.2/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/9.6.2/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/9.6.2/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+                <label for="board_size">Dimensions:</label>
+                <select name="board_size" id="board_size" onchange="UpdateBoard()">
+                <option value="12x14">12" x 14"</option>
+                <option value="12x16">12" x 16"</option>
+                <option value="12x18">12" x 18"</option>
+                </select>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+                <label for="board_thickness">Thickness:</label>
+                <select name="board_thickness" id="board_thickness">
+                <option value="1">1 inch</option>
+                <option value="1.25">1.25 inch</option>
+                <option value="1.5">1.5 inch</option>
+                <option value="1.75">1.75 inch</option>
+                <option value="2">2 inch</option>
+                
+                </select>
+            </div>
+        </div>
+        <div class="board_display"><canvas id="board_canvas"></canvas></div>
+    </body>
 </html>

@@ -8,7 +8,6 @@ const WengeColor = [46, 22, 11];
 const ColorMap = {'birch': BirchColor, 'cherry': CherryColor, 'maple': MapleColor, 'walnut': WalnutColor, 'padauk': PadaukColor, 'wenge': WengeColor};
 
 const reader = new FileReader();
-const max_resolution = 1000;
 
 ////////////////////////// GLOBALS ////////////////////////////////
 var ColorPalette = [MapleColor];
@@ -36,22 +35,15 @@ function ReadNewInput() {
 
 function LoadNewInput() {
     let canvas = document.getElementById('display_input');
-    let scale_factor = max_resolution * 1.0 / Math.max(inputImage.width, inputImage.height);
-    if (scale_factor > 1) 
-        scale_factor = 1;
-    // let scale_factor = 0.5;
-    canvas.width = inputImage.width * scale_factor;
-    canvas.height = inputImage.height * scale_factor;
-    // canvas.width = inputImage.width;
-    // canvas.height = inputImage.height;
+    canvas.width = inputImage.width;
+    canvas.height = inputImage.height;
     var context = canvas.getContext('2d')
-    context.drawImage(inputImage, 0, 0, canvas.width, canvas.height);
+    context.drawImage(inputImage, 0, 0, inputImage.width, inputImage.height);
     ReloadRGBArray();
 }
 
 function ReloadRGBArray() {
-    let canvas = document.getElementById('display_input');
-    var data = GetContext().getImageData(0, 0, canvas.width, canvas.height).data;
+    var data = GetContext().getImageData(0, 0, inputImage.width, inputImage.height).data;
     // Convert to rgb values for every pixel
     rgbArray = []
     for (var px = 0; px < data.length; px+=4) {
@@ -65,9 +57,8 @@ function loadFilters() {
         brightness = document.getElementById('brightness'),
         contrast = document.getElementById('contrast');
 
-        let canvas = document.getElementById('display_input');
     GetContext().filter = `blur(${$('#blur').val()}px) brightness(${brightness.value}%) contrast(${contrast.value}%)`
-    GetContext().drawImage(inputImage, 0, 0, canvas.width, canvas.height);
+    GetContext().drawImage(inputImage, 0, 0, inputImage.width, inputImage.height);
     ReloadRGBArray();
 }
 
@@ -118,6 +109,8 @@ function DisplayResult() {
         arr[i*4+3] = 255;
     }
     let canvas = document.getElementById('display_input');
+    canvas.width = inputImage.width;
+    canvas.height = inputImage.height;
     var context = canvas.getContext('2d')
     context.putImageData(new ImageData(arr, canvas.width), 0, 0);
 
